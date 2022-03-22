@@ -41,6 +41,7 @@ namespace EmprestimoBancario.Business
             {
                 InvestimentoId = x.Id,
                 Quantia = emprestimo.Quantia * x.Porcentagem / 100,
+                Data = DateTime.Now
             }).ToList();
         }
 
@@ -56,10 +57,14 @@ namespace EmprestimoBancario.Business
                 throw new ValidationException("Não há limite disponível");
 
             emprestimo.Quantia += quantia;
-            emprestimo.InvestimentoDeEmprestimos.ForEach(x =>
+            var a = emprestimo.LinhaDeCredito.Investimentos.Select(x => new InvestimentoDeEmprestimo
             {
-                x.Quantia += (quantia * x.Investimento.Porcentagem / 100);
-            });
+                InvestimentoId = x.Id,
+                Quantia = quantia * x.Porcentagem / 100,
+                Data = DateTime.Now
+            }).ToList();
+
+            emprestimo.InvestimentoDeEmprestimos.AddRange(a);
         }
 
         public void PagarEmprestimo(Emprestimo emprestimo, double quantia, double taxa)
@@ -77,14 +82,24 @@ namespace EmprestimoBancario.Business
                 throw new ValidationException("A quantia paga excede o valor restante do empréstimo");
 
             emprestimo.Quantia -= quantia;
-            emprestimo.InvestimentoDeEmprestimos.ForEach(x =>
+
+            emprestimo.LinhaDeCredito.Investimentos.ForEach(x => 
             {
-                x.Quantia -= (quantia * x.Investimento.Porcentagem);
-                x.Investimento.Taxas.Add(new Taxa
+                var b = new InvestimentoDeEmprestimo
                 {
-                    Quantia = taxa * x.Investimento.Porcentagem / 100,
+                    InvestimentoId = x.Id,
+                    Investimento = x,
+                    Quantia = quantia * x.Porcentagem / 100 * -1,
+                    Data = DateTime.Now
+                };
+
+                b.Investimento.Taxas.Add(new Taxa
+                {
+                    Quantia = taxa * x.Porcentagem / 100,
                     Data = DateTime.Now
                 });
+
+                emprestimo.InvestimentoDeEmprestimos.Add(b);
             });
         }
     }
