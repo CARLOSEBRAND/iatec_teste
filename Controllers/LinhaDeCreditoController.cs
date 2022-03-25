@@ -15,13 +15,16 @@ namespace EmprestimoBancario.Controllers
         public ActionResult<LinhaDeCredito> Criar([FromBody] LinhaDeCredito linhaDeCredito)
         {
             var business = new LinhaDeCreditoBusiness();
-            var bancoDeDados = new BancoDeDadosContexto();
-            business.Criar(linhaDeCredito);
-
-            bancoDeDados.Add(linhaDeCredito);
-            bancoDeDados.SaveChanges();
-
-            return Created("", linhaDeCredito.Id);
+            try
+            {
+                business.Criar(linhaDeCredito);
+                return Created("", linhaDeCredito.Id);
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+                throw;
+            }
         }
 
         [HttpGet]

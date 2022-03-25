@@ -50,67 +50,92 @@ namespace EmprestimoBancario.Controllers
         }
 
         [HttpPost]
-        public ActionResult Criar(Emprestimo emprestimo)
+        public ActionResult<Emprestimo> Criar(Emprestimo emprestimo)
         {
-            var bancoDedados = new BancoDeDadosContexto();
             var business = new EmprestimoBusiness();
-            business.Criar(emprestimo);
+            try
+            {
+                business.Criar(emprestimo);
+                return Created("", emprestimo.Id);
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
-            bancoDedados.Emprestimos.Add(emprestimo);
-            bancoDedados.SaveChanges();
-            return Created("", emprestimo.Id);
+        [HttpPut("{id:int}/aprovar")]
+        public ActionResult Aprovar([FromRoute] int id, [FromBody] AprovarEmprestimoModel model)
+        {
+            var business = new EmprestimoBusiness();
+            try
+            {
+                business.Aprovar(id, model.InvestidorId, model.Porcentagem);
+                return NoContent();
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut("{id:int}/status")]
+        public ActionResult VerificaStatus([FromRoute] int id)
+        {
+            var business = new EmprestimoBusiness();
+            try
+            {
+                business.VerificaStatus(id);
+                return NoContent();
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpPut("{id:int}/aumentar")]
         public ActionResult Aumentar([FromRoute] int id, [FromBody] PagarEmprestimoModel model)
         {
-            var bancoDeDados = new BancoDeDadosContexto();
-            var emprestimo = bancoDeDados.Emprestimos
-                .Include(x => x.InvestimentoDeEmprestimos)
-                    .ThenInclude(x => x.Investimento)
-                        .ThenInclude(x => x.Taxas)
-                .Include(x => x.LinhaDeCredito)
-                    .ThenInclude(x => x.Investimentos)
-                .FirstOrDefault(x => x.Id == id);
-
-            if(emprestimo is null)
-                return NotFound();
-
-            var business = new EmprestimoBusiness();
-            business.AumentarEmprestimo(emprestimo, model.Quantia);
-
-            bancoDeDados.SaveChanges();
-            return NoContent();
+            try
+            {
+                var business = new EmprestimoBusiness();
+                business.AumentarEmprestimo(id, model.Quantia);
+                return NoContent();
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }           
+            
         }
 
 
         [HttpPut("{id:int}/pagar")]
         public ActionResult Diminuir([FromRoute] int id, [FromBody] PagarEmprestimoModel model)
         {
-            var bancoDeDados = new BancoDeDadosContexto();
-            var emprestimo = bancoDeDados.Emprestimos
-                .Include(x => x.InvestimentoDeEmprestimos)
-                    .ThenInclude(x => x.Investimento)
-                        .ThenInclude(x => x.Taxas)
-                .Include(x => x.LinhaDeCredito)
-                    .ThenInclude(x => x.Investimentos)
-                .FirstOrDefault(x => x.Id == id);
-
-            if (emprestimo is null)
-                return NotFound();
-
-            var business = new EmprestimoBusiness();
-            business.PagarEmprestimo(emprestimo, model.Quantia, model.Taxa);
-
-            bancoDeDados.SaveChanges();
-            return NoContent();
+            try
+            {
+                var business = new EmprestimoBusiness();
+                business.PagarEmprestimo(id, model.Quantia, model.Taxa);
+                return NoContent();
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }         
         }
-
     }
 
     public class PagarEmprestimoModel
     {
         public double Quantia { get; set; }
         public double Taxa { get; set; }
+    }
+
+    public class AprovarEmprestimoModel
+    {
+        public int InvestidorId { get; set; }
+        public double Porcentagem { get; set; }
     }
 }

@@ -4,14 +4,16 @@ using EmprestimoBancario;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EmprestimoBancario.Migrations
 {
     [DbContext(typeof(BancoDeDadosContexto))]
-    partial class BancoDeDadosContextoModelSnapshot : ModelSnapshot
+    [Migration("20220324210726_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

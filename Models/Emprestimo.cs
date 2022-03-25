@@ -2,6 +2,12 @@
 
 namespace EmprestimoBancario.Models
 {
+    public enum Aprovado
+    {
+        SIM,
+        NÃO
+    }
+
     public class Emprestimo
     {
         public int Id { get; set; }
@@ -9,5 +15,6 @@ namespace EmprestimoBancario.Models
         public List<InvestimentoDeEmprestimo> InvestimentoDeEmprestimos { get; set; } = new List<InvestimentoDeEmprestimo>();
         public LinhaDeCredito LinhaDeCredito { get; set; }
         public int LinhaDeCreditoId { get; set; }
+        public Aprovado Aprovado { get; set; }  
     }
 }

@@ -31,6 +31,11 @@ namespace EmprestimoBancario.Business
 
             if (linhaDeCredito.Investimentos.Sum(x => x.Porcentagem) != 100)
                 throw new ValidationException("Uma linha de crédito não pode ser criada caso a soma dos investimentos não seja igual ao limite da linha de crédito");
+
+            var bancoDeDados = new BancoDeDadosContexto();
+            bancoDeDados.Add(linhaDeCredito);
+            bancoDeDados.SaveChanges();
+
         }
     }
 }
