@@ -2,6 +2,7 @@
 using EmprestimoBancario.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace EmprestimoBancario.Controllers
@@ -11,42 +12,28 @@ namespace EmprestimoBancario.Controllers
     public class EmprestimoController : ControllerBase
     {
         [HttpGet]
-        public ActionResult Listar()
+        public ActionResult<List<Emprestimo>> Listar()
         {
-            var bancoDedados = new BancoDeDadosContexto();
-            var emprestimos = bancoDedados.Emprestimos
-                .Include(x => x.InvestimentoDeEmprestimos)
-                    .ThenInclude(x => x.Investimento)
-                        .ThenInclude(x => x.Taxas)
-                .Include(x => x.InvestimentoDeEmprestimos)
-                    .ThenInclude(x => x.Investimento)
-                        .ThenInclude(x => x.Investidor)
-                .Include(x => x.LinhaDeCredito)
-                    .ThenInclude(x => x.Investimentos)
-                .Include(x => x.LinhaDeCredito)
-                    .ThenInclude(x => x.Empresa);
-
-            return Ok(emprestimos);
+            try {
+                EmprestimoBusiness business = new();
+                List<Emprestimo> emprestimo = business.ListaEmprestimo();
+                return Ok(emprestimo);
+            }
+            catch (ValidationException) {
+                return BadRequest("Erro Interno.");
+            }
         }
 
         [HttpGet("{id:int}")]
-        public ActionResult ListarPorId([FromRoute] int id)
+        public ActionResult<List<Emprestimo>> ListarPorId([FromRoute] int id)
         {
-            var bancoDedados = new BancoDeDadosContexto();
-            var emprestimo = bancoDedados.Emprestimos
-                .Include(x => x.InvestimentoDeEmprestimos)
-                    .ThenInclude(x => x.Investimento)
-                        .ThenInclude(x => x.Taxas)
-                .Include(x => x.InvestimentoDeEmprestimos)
-                    .ThenInclude(x => x.Investimento)
-                        .ThenInclude(x => x.Investidor)
-                .Include(x => x.LinhaDeCredito)
-                    .ThenInclude(x => x.Investimentos)
-                .Include(x => x.LinhaDeCredito)
-                    .ThenInclude(x => x.Empresa)
-                .FirstOrDefault(x => x.Id == id);
-
-            return Ok(emprestimo);
+            try {
+                var business = new EmprestimoBusiness();
+                List<Emprestimo> emprestimo = business.ListaEmprestimo(id, true);
+                return Ok(emprestimo);
+            } catch (ValidationException) {
+                return BadRequest("Erro Interno.");
+            }
         }
 
         [HttpPost]
@@ -95,7 +82,7 @@ namespace EmprestimoBancario.Controllers
         }
 
         [HttpPut("{id:int}/aumentar")]
-        public ActionResult Aumentar([FromRoute] int id, [FromBody] PagarEmprestimoModel model)
+        public ActionResult<EmprestimoBusiness> Aumentar([FromRoute] int id, [FromBody] PagarEmprestimoModel model)
         {
             try
             {
@@ -112,7 +99,7 @@ namespace EmprestimoBancario.Controllers
 
 
         [HttpPut("{id:int}/pagar")]
-        public ActionResult Diminuir([FromRoute] int id, [FromBody] PagarEmprestimoModel model)
+        public ActionResult<EmprestimoBusiness> Diminuir([FromRoute] int id, [FromBody] PagarEmprestimoModel model)
         {
             try
             {

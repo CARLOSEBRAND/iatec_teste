@@ -44,3 +44,10 @@ public class ValidationException : Exception
     {
     }
 }
+
+public class DataBaseException : Exception
+{
+    public DataBaseException(string message) : base(message)
+    {
+    }
+}

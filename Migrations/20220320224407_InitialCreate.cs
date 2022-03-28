@@ -56,7 +56,7 @@ namespace EmprestimoBancario.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Emprestimos",
+                name: "Emprestimo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -66,9 +66,9 @@ namespace EmprestimoBancario.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Emprestimos", x => x.Id);
+                    table.PrimaryKey("PK_Emprestimo", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Emprestimos_LinhaDeCredito_LinhaDeCreditoId",
+                        name: "FK_Emprestimo_LinhaDeCredito_LinhaDeCreditoId",
                         column: x => x.LinhaDeCreditoId,
                         principalTable: "LinhaDeCredito",
                         principalColumn: "Id",
@@ -116,9 +116,9 @@ namespace EmprestimoBancario.Migrations
                 {
                     table.PrimaryKey("PK_InvestimentoDeEmprestimo", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_InvestimentoDeEmprestimo_Emprestimos_EmprestimoId",
+                        name: "FK_InvestimentoDeEmprestimo_Emprestimo_EmprestimoId",
                         column: x => x.EmprestimoId,
-                        principalTable: "Emprestimos",
+                        principalTable: "Emprestimo",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -151,8 +151,8 @@ namespace EmprestimoBancario.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Emprestimos_LinhaDeCreditoId",
-                table: "Emprestimos",
+                name: "IX_Emprestimo_LinhaDeCreditoId",
+                table: "Emprestimo",
                 column: "LinhaDeCreditoId");
 
             migrationBuilder.CreateIndex(
@@ -195,7 +195,7 @@ namespace EmprestimoBancario.Migrations
                 name: "Taxa");
 
             migrationBuilder.DropTable(
-                name: "Emprestimos");
+                name: "Emprestimo");
 
             migrationBuilder.DropTable(
                 name: "Investimento");

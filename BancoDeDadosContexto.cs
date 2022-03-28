@@ -5,7 +5,7 @@ namespace EmprestimoBancario
 {
     public class BancoDeDadosContexto : DbContext
     {
-        public DbSet<Emprestimo> Emprestimos { get; set; }
+        public DbSet<Emprestimo> Emprestimo { get; set; }
         public DbSet<Empresa> Empresa { get; set; }
         public DbSet<LinhaDeCredito> LinhaDeCredito { get; set; }
         public DbSet<AprovacaoEmprestimo> AprovacaoEmprestimo { get; set; }

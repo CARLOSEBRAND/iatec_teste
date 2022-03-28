@@ -1,7 +1,7 @@
 ﻿using EmprestimoBancario.Business;
 using EmprestimoBancario.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,47 +14,49 @@ namespace EmprestimoBancario.Controllers
         [HttpPost]
         public ActionResult<LinhaDeCredito> Criar([FromBody] LinhaDeCredito linhaDeCredito)
         {
-            var business = new LinhaDeCreditoBusiness();
-            try
-            {
+            try {
+                var business = new LinhaDeCreditoBusiness();
                 business.Criar(linhaDeCredito);
                 return Created("", linhaDeCredito.Id);
             }
-            catch (ValidationException e)
-            {
-                return BadRequest(e.Message);
-                throw;
+            catch (Exception ex) {
+                if (ex is ValidationException) {
+                    return BadRequest(ex.Message);
+                } else {
+                    return BadRequest("Erro Interno.");
+                    throw;
+                }
             }
         }
 
         [HttpGet]
         public ActionResult<List<LinhaDeCredito>> Listar()
         {
-            var bancoDeDados = new BancoDeDadosContexto();
-            var linhasDeCredito = bancoDeDados.LinhaDeCredito
-                .Include(x => x.Empresa)
-                .Include(x => x.Investimentos)
-                    .ThenInclude(x => x.Investidor)
-                .Include(x => x.Investimentos)
-                    .ThenInclude(x => x.Taxas);
-
-            return Ok(linhasDeCredito);
+            try
+            {
+                var business = new LinhaDeCreditoBusiness();
+                List<LinhaDeCredito> linhasDeCredito = business.ListaLinhaDeCredito();
+                return Ok(linhasDeCredito);
+            }
+            catch (DataBaseException)
+            {
+                return BadRequest("Erro Interno.");
+                throw;
+            }                      
         }
 
 
         [HttpGet("{id:int}")]
         public ActionResult<List<LinhaDeCredito>> ListarPorId([FromRoute] int id)
         {
-            var bancoDeDados = new BancoDeDadosContexto();
-            var linhasDeCredito = bancoDeDados.LinhaDeCredito
-                .Include(x => x.Empresa)
-                .Include(x => x.Investimentos)
-                    .ThenInclude(x => x.Investidor)
-                .Include(x => x.Investimentos)
-                    .ThenInclude(x => x.Taxas);
-
-            return Ok(linhasDeCredito.FirstOrDefault(x => x.Id == id));
+            try {
+                var business = new LinhaDeCreditoBusiness();
+                List<LinhaDeCredito> linhaDeCredito = business.ListaLinhaDeCredito(id, true);
+                return Ok(linhaDeCredito);
+            }
+            catch (DataBaseException) {
+                return BadRequest("Erro Interno.");
+            }
         }
-
     }
 }

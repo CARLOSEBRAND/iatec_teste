@@ -1,5 +1,8 @@
 ﻿using EmprestimoBancario.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace EmprestimoBancario.Business
 {
@@ -22,7 +25,6 @@ namespace EmprestimoBancario.Business
             if(linhaDeCredito.Investimentos.Any(x => x.InvestidorId == default))
                 throw new ValidationException("Os investimentos precisa de um investidor");
 
-
             if (linhaDeCredito.Investimentos.Any(x => x.Porcentagem <= 0))
                 throw new ValidationException("A porcentagem de investimento deve ser maior que zero");
 
@@ -32,10 +34,37 @@ namespace EmprestimoBancario.Business
             if (linhaDeCredito.Investimentos.Sum(x => x.Porcentagem) != 100)
                 throw new ValidationException("Uma linha de crédito não pode ser criada caso a soma dos investimentos não seja igual ao limite da linha de crédito");
 
-            var bancoDeDados = new BancoDeDadosContexto();
-            bancoDeDados.Add(linhaDeCredito);
-            bancoDeDados.SaveChanges();
+            try {
+                using var bancoDeDados = new BancoDeDadosContexto();
+                bancoDeDados.Add(linhaDeCredito);
+                bancoDeDados.SaveChanges();
+            } catch (DataBaseException e ) {
+                throw new DataBaseException(e.Message);
+            }
+        }
 
+        public List<LinhaDeCredito> ListaLinhaDeCredito([Optional] int id, [Optional] bool useId)
+        {
+            try {
+                using BancoDeDadosContexto bancoDeDados = new();
+                var listDelinhasDeCredito = bancoDeDados.LinhaDeCredito
+                     .Include(x => x.Empresa).Include(x => x.Investimentos)
+                     .ThenInclude(x => x.Investidor).Include(x => x.Investimentos)
+                     .ThenInclude(x => x.Taxas).ToList();
+               
+                if (!useId) {
+                    List<LinhaDeCredito> result = listDelinhasDeCredito;
+                    return result; 
+                } else {
+                    List<LinhaDeCredito> result = new();
+                    var listaFiltro = listDelinhasDeCredito.FirstOrDefault(x => x.Id == id);
+                    if (listaFiltro != null) result.Add(listaFiltro);
+                    return result;
+                }
+            }
+            catch (DataBaseException e) {
+                throw new DataBaseException(e.Message);
+            }
         }
     }
 }

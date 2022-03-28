@@ -74,7 +74,7 @@ namespace EmprestimoBancario.Migrations
 
                     b.HasIndex("LinhaDeCreditoId");
 
-                    b.ToTable("Emprestimos");
+                    b.ToTable("Emprestimo");
                 });
 
             modelBuilder.Entity("EmprestimoBancario.Models.Investimento", b =>
@@ -195,7 +195,7 @@ namespace EmprestimoBancario.Migrations
             modelBuilder.Entity("EmprestimoBancario.Models.InvestimentoDeEmprestimo", b =>
                 {
                     b.HasOne("EmprestimoBancario.Models.Emprestimo", null)
-                        .WithMany("InvestimentoDeEmprestimos")
+                        .WithMany("InvestimentoDeEmprestimo")
                         .HasForeignKey("EmprestimoId");
 
                     b.HasOne("EmprestimoBancario.Models.Investimento", "Investimento")
@@ -223,7 +223,7 @@ namespace EmprestimoBancario.Migrations
 
             modelBuilder.Entity("EmprestimoBancario.Models.Emprestimo", b =>
                 {
-                    b.Navigation("InvestimentoDeEmprestimos");
+                    b.Navigation("InvestimentoDeEmprestimo");
                 });
 
             modelBuilder.Entity("EmprestimoBancario.Models.Investimento", b =>

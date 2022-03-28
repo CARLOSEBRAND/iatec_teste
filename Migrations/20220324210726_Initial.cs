@@ -15,7 +15,7 @@ namespace EmprestimoBancario.Migrations
 
             migrationBuilder.AddColumn<int>(
                 name: "Aprovado",
-                table: "Emprestimos",
+                table: "Emprestimo",
                 type: "int",
                 nullable: false,
                 defaultValue: 0);
@@ -58,7 +58,7 @@ namespace EmprestimoBancario.Migrations
 
             migrationBuilder.DropColumn(
                 name: "Aprovado",
-                table: "Emprestimos");
+                table: "Emprestimo");
         }
     }
 }

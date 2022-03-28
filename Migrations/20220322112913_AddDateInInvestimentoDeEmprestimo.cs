@@ -8,8 +8,8 @@ namespace EmprestimoBancario.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Emprestimos_LinhaDeCredito_LinhaDeCreditoId",
-                table: "Emprestimos");
+                name: "FK_Emprestimo_LinhaDeCredito_LinhaDeCreditoId",
+                table: "Emprestimo");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Investimento_Banco_InvestidorId",
@@ -62,7 +62,7 @@ namespace EmprestimoBancario.Migrations
 
             migrationBuilder.AlterColumn<int>(
                 name: "LinhaDeCreditoId",
-                table: "Emprestimos",
+                table: "Emprestimo",
                 type: "int",
                 nullable: false,
                 defaultValue: 0,
@@ -71,8 +71,8 @@ namespace EmprestimoBancario.Migrations
                 oldNullable: true);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Emprestimos_LinhaDeCredito_LinhaDeCreditoId",
-                table: "Emprestimos",
+                name: "FK_Emprestimo_LinhaDeCredito_LinhaDeCreditoId",
+                table: "Emprestimo",
                 column: "LinhaDeCreditoId",
                 principalTable: "LinhaDeCredito",
                 principalColumn: "Id",
@@ -106,8 +106,8 @@ namespace EmprestimoBancario.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Emprestimos_LinhaDeCredito_LinhaDeCreditoId",
-                table: "Emprestimos");
+                name: "FK_Emprestimo_LinhaDeCredito_LinhaDeCreditoId",
+                table: "Emprestimo");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Investimento_Banco_InvestidorId",
@@ -151,15 +151,15 @@ namespace EmprestimoBancario.Migrations
 
             migrationBuilder.AlterColumn<int>(
                 name: "LinhaDeCreditoId",
-                table: "Emprestimos",
+                table: "Emprestimo",
                 type: "int",
                 nullable: true,
                 oldClrType: typeof(int),
                 oldType: "int");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Emprestimos_LinhaDeCredito_LinhaDeCreditoId",
-                table: "Emprestimos",
+                name: "FK_Emprestimo_LinhaDeCredito_LinhaDeCreditoId",
+                table: "Emprestimo",
                 column: "LinhaDeCreditoId",
                 principalTable: "LinhaDeCredito",
                 principalColumn: "Id",
