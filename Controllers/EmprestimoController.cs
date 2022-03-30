@@ -1,9 +1,7 @@
 ﻿using EmprestimoBancario.Business;
 using EmprestimoBancario.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace EmprestimoBancario.Controllers
 {
@@ -57,7 +55,7 @@ namespace EmprestimoBancario.Controllers
             var business = new EmprestimoBusiness();
             try
             {
-                business.Aprovar(id, model.InvestidorId, model.Porcentagem);
+                business.Aprovar(id, model.InvestidorId, model.Porcentagem, model.Confirma);
                 return NoContent();
             }
             catch (ValidationException e)
@@ -72,8 +70,8 @@ namespace EmprestimoBancario.Controllers
             var business = new EmprestimoBusiness();
             try
             {
-                business.VerificaStatus(id);
-                return NoContent();
+                var mensagem = business.VerificaStatus(id);
+                return Ok(mensagem);
             }
             catch (ValidationException e)
             {
@@ -123,6 +121,10 @@ namespace EmprestimoBancario.Controllers
     public class AprovarEmprestimoModel
     {
         public int InvestidorId { get; set; }
+        
         public double Porcentagem { get; set; }
+
+        public char Confirma { get; set; }
+
     }
 }

@@ -2,10 +2,12 @@
 
 namespace EmprestimoBancario.Models
 {
-    public enum Aprovado
+    public enum Status
     {
-        SIM,
-        NÃO
+        APROVADO = 'A',
+        NEGADO = 'N',
+        PENDENTE = 'P'
+
     }
 
     public class Emprestimo
@@ -18,7 +20,7 @@ namespace EmprestimoBancario.Models
 
         public LinhaDeCredito LinhaDeCredito { get; set; }
 
-        public Aprovado Aprovado { get; set; }
+        public Status Status { get; set; }
 
         public List<InvestimentoDeEmprestimo> InvestimentoDeEmprestimo { get; set; } = new List<InvestimentoDeEmprestimo>();
     }

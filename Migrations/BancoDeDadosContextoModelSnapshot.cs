@@ -19,29 +19,6 @@ namespace EmprestimoBancario.Migrations
                 .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("EmprestimoBancario.Models.AprovacaoEmprestimo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("EmprestimoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("InvestidorId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Porcentagem")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InvestidorId");
-
-                    b.ToTable("AprovacaoEmprestimo");
-                });
-
             modelBuilder.Entity("EmprestimoBancario.Models.Banco", b =>
                 {
                     b.Property<int>("Id")
@@ -85,14 +62,14 @@ namespace EmprestimoBancario.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Aprovado")
-                        .HasColumnType("int");
-
                     b.Property<int>("LinhaDeCreditoId")
                         .HasColumnType("int");
 
                     b.Property<double>("Quantia")
                         .HasColumnType("float");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -108,8 +85,9 @@ namespace EmprestimoBancario.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Aprovado")
-                        .HasColumnType("int");
+                    b.Property<string>("Confirmado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1)");
 
                     b.Property<int>("InvestidorId")
                         .HasColumnType("int");
@@ -118,6 +96,9 @@ namespace EmprestimoBancario.Migrations
                         .HasColumnType("int");
 
                     b.Property<double>("Porcentagem")
+                        .HasColumnType("float");
+
+                    b.Property<double>("PorcentagemAprovada")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -198,17 +179,6 @@ namespace EmprestimoBancario.Migrations
                     b.HasIndex("InvestimentoId");
 
                     b.ToTable("Taxa");
-                });
-
-            modelBuilder.Entity("EmprestimoBancario.Models.AprovacaoEmprestimo", b =>
-                {
-                    b.HasOne("EmprestimoBancario.Models.Banco", "Investidor")
-                        .WithMany()
-                        .HasForeignKey("InvestidorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Investidor");
                 });
 
             modelBuilder.Entity("EmprestimoBancario.Models.Emprestimo", b =>
