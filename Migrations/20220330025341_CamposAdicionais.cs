@@ -6,12 +6,12 @@ namespace EmprestimoBancario.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
+            migrationBuilder.AddColumn<char>(
                 name: "Confirmado",
                 table: "Investimento",
                 type: "nvarchar(1)",
                 nullable: false,
-                defaultValue: "P");
+                defaultValue: 'P');
 
             migrationBuilder.AddColumn<double>(
                 name: "PorcentagemAprovada",
@@ -20,12 +20,12 @@ namespace EmprestimoBancario.Migrations
                 nullable: false,
                 defaultValue: 0.0);
 
-            migrationBuilder.AddColumn<int>(
+            migrationBuilder.AddColumn<char>(
                 name: "Status",
                 table: "Emprestimo",
-                type: "int",
+                type: "nvarchar(1)",
                 nullable: false,
-                defaultValue: "P");
+                defaultValue: 'P');
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

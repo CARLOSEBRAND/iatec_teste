@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmprestimoBancario", "EmprestimoBancario.csproj", "{951027EA-252D-4871-9C1F-80E93E71DBCC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiEmprestimoXunitTests", "..\ApiEmprestimoXunitTests\ApiEmprestimoXunitTests.csproj", "{0FABCE67-6C9C-4CF4-85E6-FD778C685DEA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmprestimoBancarioTests", "..\EmprestimoBancarioTests\EmprestimoBancarioTests.csproj", "{E20C0633-0F73-42AC-90F2-342C6DD01E60}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{951027EA-252D-4871-9C1F-80E93E71DBCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{951027EA-252D-4871-9C1F-80E93E71DBCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{951027EA-252D-4871-9C1F-80E93E71DBCC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0FABCE67-6C9C-4CF4-85E6-FD778C685DEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0FABCE67-6C9C-4CF4-85E6-FD778C685DEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0FABCE67-6C9C-4CF4-85E6-FD778C685DEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0FABCE67-6C9C-4CF4-85E6-FD778C685DEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E20C0633-0F73-42AC-90F2-342C6DD01E60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E20C0633-0F73-42AC-90F2-342C6DD01E60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E20C0633-0F73-42AC-90F2-342C6DD01E60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E20C0633-0F73-42AC-90F2-342C6DD01E60}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

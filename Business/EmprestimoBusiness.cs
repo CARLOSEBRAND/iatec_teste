@@ -35,7 +35,7 @@ namespace EmprestimoBancario.Business
             if (emprestimo.InvestimentoDeEmprestimo.Any())
                 throw new ValidationException("Os investimentos não devem ser informados.");
 
-            emprestimo.Status = Status.PENDENTE;
+            emprestimo.Status = 'P';
 
             bancoDedados.Emprestimo.Add(emprestimo);
             bancoDedados.SaveChanges();
@@ -55,7 +55,7 @@ namespace EmprestimoBancario.Business
             var investidorAtual = investimentos.Find(x => x.InvestidorId == investidorId);
 
             if (novaPorcentagem > investidorAtual.Porcentagem && investimentos.All(x => x.Confirmado == 'P'))
-                throw new ValidationException("O limite de investimento para esta linha de crédito é de até "+ investidorAtual.Porcentagem + "%");
+                throw new ValidationException("O limite de investimento para esta linha de crédito é de até "+ investidorAtual.Porcentagem + "%.");
 
             var investimentosAtualNegados = investimentos.Where(x => x.Confirmado == 'N').Sum(x => x.Porcentagem);
             var investimentoAtualConfirmados = investimentos.Where(x => x.Confirmado == 'S').Sum(x => x.Porcentagem);
@@ -70,7 +70,7 @@ namespace EmprestimoBancario.Business
             }
 
             if (novaPorcentagem > limite)
-                 throw new ValidationException("O limite de investimento para esta linha de crédito é de até " + limite + "%");
+                 throw new ValidationException("O limite de investimento para esta linha de crédito é de até " + limite + "%.");
 
             investidorAtual.PorcentagemAprovada = novaPorcentagem;
             investidorAtual.Confirmado = confirma;
@@ -95,27 +95,26 @@ namespace EmprestimoBancario.Business
             var investimentosConfirmados = investimentos.Where(x => x.Confirmado == 'S').Sum(x => x.PorcentagemAprovada);
 
             if (investimentosConfirmados == 100) {
-                emprestimo.Status = Status.APROVADO;
-                return "Empréstimo Aprovado";
+                emprestimo.Status = 'A';
             } else {
-                emprestimo.Status = Status.NEGADO;
-                return "Empréstimo Negado";
+                emprestimo.Status = 'N';
             }
 
-            LinhaDeCredito linhaDeCredito = bancoDeDados.LinhaDeCredito
-                .Include(x => x.Empresa).Include(x => x.Investimentos)
-                .ThenInclude(x => x.Investidor).Include(x => x.Investimentos)
-                .ThenInclude(x => x.Taxas).FirstOrDefault(x => x.Id == emprestimo.LinhaDeCreditoId);
-
-            emprestimo.InvestimentoDeEmprestimo = linhaDeCredito.Investimentos
+            emprestimo.InvestimentoDeEmprestimo = emprestimo.LinhaDeCredito.Investimentos
                 .Select(x => new InvestimentoDeEmprestimo {
                     InvestimentoId = x.Id,
-                    Quantia = emprestimo.Quantia * x.Porcentagem / 100,
+                    Quantia = emprestimo.Quantia * x.PorcentagemAprovada / 100,
                     Data = DateTime.Now
                 }).ToList();
 
-            bancoDeDados.Emprestimo.Add(emprestimo);
+            bancoDeDados.Emprestimo.Update(emprestimo);
             bancoDeDados.SaveChanges();
+            
+            if (investimentosConfirmados == 100) {
+                return "Empréstimo Aprovado.";
+            } else {
+                return "Empréstimo Negado.";
+            }
         }
 
         public void AumentarEmprestimo(int id, double quantia)
@@ -133,6 +132,9 @@ namespace EmprestimoBancario.Business
             if (emprestimo == null)
                 throw new ValidationException("O empréstimo não pode ser nulo.");
 
+            if (emprestimo.Status != 'A')
+                throw new ValidationException("O empréstimo ainda não foi aprovado.");
+
             if (quantia <= 0)
                 throw new ValidationException("A quantia deve ser maior que zero.");
 
@@ -145,7 +147,7 @@ namespace EmprestimoBancario.Business
                 .Select( investimento => new InvestimentoDeEmprestimo
                 {
                     InvestimentoId = investimento.Id,
-                    Quantia = quantia * investimento.Porcentagem / 100,
+                    Quantia = quantia * investimento.PorcentagemAprovada / 100,
                     Data = DateTime.Now
             }).ToList();
 
@@ -168,6 +170,9 @@ namespace EmprestimoBancario.Business
             if (emprestimo == null)
                 throw new ValidationException("O empréstimo não pode ser nulo.");
 
+            if (emprestimo.Status != 'A')
+                throw new ValidationException("O empréstimo ainda não foi aprovado.");
+
             if (quantia <= 0)
                 throw new ValidationException("A quantia deve ser maior que zero.");
 
@@ -185,13 +190,13 @@ namespace EmprestimoBancario.Business
                     {
                         Investimento = investimento,
                         InvestimentoId = investimento.Id,
-                        Quantia = quantia * investimento.Porcentagem / 100 * -1,
+                        Quantia = quantia * investimento.PorcentagemAprovada / 100 * -1,
                         Data = DateTime.Now
                     };
 
                     investimentoDeEmprestimo.Investimento.Taxas.Add(new Taxa
                     {
-                        Quantia = taxa * investimento.Porcentagem / 100,
+                        Quantia = taxa * investimento.PorcentagemAprovada / 100,
                         Data = DateTime.Now
                     });
 
